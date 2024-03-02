@@ -1,0 +1,17 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The SNUC IPL Auction</title>
+
+</head>
+<body>
+    <form method="POST" action="" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{form}}
+    <button type="submit" class="btn btn-primary m-3 mb-3">Submit</button>
+    </form>
+</body>
+</html>

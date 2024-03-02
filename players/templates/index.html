@@ -1,0 +1,138 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The SNUC IPL Auction</title>
+
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+    <div id="modal">
+        <div id="modal-content">
+            <h1>New Pool</h1>
+            <div id="pool-name">{{ pool.poolName }}</div>
+            <div id="closemodal">Continue -&gt;</div>
+        </div>
+    </div>
+    <div id="logo">
+        <img src="{%static 'logo.png'%}" alt="">
+    </div>
+    <div class="container">
+        <div class="image__container">
+            <img src="{{player.img.url}}" alt="">
+        </div>
+        <div class="stats__container">
+            <div class="baseprice__container">
+                <div class="baseprice">BASE PRICE</div>
+                <div id="baseprice">{{ player.basePrice }}</div>
+            </div>
+            <div id="name">{{ player.name }}</div>
+            <div id="demographic__container">
+                <div id="country">{{ player.country }}</div>
+                <div id="poolname">POOL: {{ pool.poolName }}</div>
+                <div class="age">AGE: <span id="age">{{ player.age }}</span></div>
+            </div>
+            <div class="stats__header">
+                <div>MATCHES</div>
+                <div>RUNS</div>
+                <div>WICKETS</div>
+            </div>
+            <div class="stats__stats">
+                {% if player.numMatches %}
+                <div>{{ player.numMatches }}</div>
+                {% else %}
+                <div>-</div>
+                {%endif%}
+                {% if player.numRuns %}
+                <div>{{ player.numRuns }}</div>
+                {% else %}
+                <div>-</div>
+                {%endif%}
+                {% if player.numWickets %}
+                <div>{{ player.numWickets }}</div>
+                {% else %}
+                <div>-</div>
+                {%endif%}
+            </div>
+            <div class="stats__header">
+                <div>BAT AVG</div>
+                <div>BOWL AVG</div>
+                <div>STRIKE RATE</div>
+            </div>
+            <div class="stats__stats">
+                {% if player.battingAvg %}
+                <div>{{ player.battingAvg }}</div>
+                {% else %}
+                <div>-</div>
+                {%endif%}
+                {% if player.bowlingAvg %}
+                <div>{{ player.bowlingAvg }}</div>
+                {% else %}
+                <div>-</div>
+                {%endif%}
+                {% if player.strikeRate %}
+                <div>{{ player.strikeRate }}</div>
+                {% else %}
+                <div>-</div>
+                {%endif%}
+            </div>
+        </div>
+        <form>
+            {%csrf_token%}
+            <button name="rtm" type="submit"></button>
+        </form>
+    </div>
+    <a href="{% url 'get_player' id|add:'1' %}" id="nextbutton">Next -&gt;</a>
+    <script>
+        let showModal = "{{ pool.isNewPool }}"
+        showModal = showModal === "True" ? true : false
+
+        document.addEventListener("DOMContentLoaded", (e) => {
+            if (showModal) {
+                document.getElementById("modal").style.display = "flex"
+            }
+        })
+
+
+        document.getElementById("closemodal").addEventListener("click", () => {
+            document.getElementById("modal").style.display = "none"
+        })
+
+        function getCookie(name) {
+            if (!document.cookie) {
+                return null;
+            }
+
+            const xsrfCookies = document.cookie.split(';')
+                .map(c => c.trim())
+                .filter(c => c.startsWith(name + '='));
+
+            if (xsrfCookies.length === 0) {
+                return null;
+            }
+            return decodeURIComponent(xsrfCookies[0].split('=')[1]);
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const csrfToken = getCookie('csrftoken');
+            console.log(csrfToken)
+            fetch("{%url 'get_player' id%}", {
+                method: "POST",
+                body: JSON.stringify({
+                    rtmUse: "{{rtm}}",
+                }),
+                headers: {
+                    "Content-type": "application/json; charset=UTF-8",
+                    "X-CSRFToken": csrfToken
+                }
+                });
+            });
+        }); 
+    </script>
+</body>
+</html>
