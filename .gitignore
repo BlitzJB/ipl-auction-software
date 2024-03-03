@@ -4,7 +4,7 @@
 */images/*
 
 */__pycache__
-*/migrations/*
+*/migrations/__pycache__
 !*/migrations/__init__.py
 
 db.sqlite3
